@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>VitalPets — Clientes</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: #f9fcfb;
+        color: #2d2d2d;
+      }
+      header {
+        background: #78c4a7;
+        padding: 18px 40px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      header h1 {
+        color: #fff;
+        font-size: 1.6rem;
+        font-weight: 700;
+      }
+      main {
+        max-width: 980px;
+        margin: 36px auto;
+        padding: 0 20px;
+      }
+      .tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      .tab {
+        padding: 10px 24px;
+        border-radius: 8px;
+        border: 2px solid #78c4a7;
+        background: #fff;
+        color: #78c4a7;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .tab.active {
+        background: #78c4a7;
+        color: #fff;
+      }
+      .card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 28px 32px;
+        box-shadow: 0 2px 12px rgba(120, 196, 167, 0.15);
+        margin-bottom: 32px;
+        border-top: 4px solid #78c4a7;
+      }
+      .card h2 {
+        color: #78c4a7;
+        margin-bottom: 20px;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-group.full {
+        grid-column: span 2;
+      }
+      label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #555;
+        text-transform: uppercase;
+      }
+      input,
+      select {
+        padding: 10px 14px;
+        border: 1.5px solid #ceeadf;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        background: #f9fcfb;
+        outline: none;
+      }
+      input:focus,
+      select:focus {
+        border-color: #78c4a7;
+        background: #fff;
+      }
+      .btn {
+        background: #78c4a7;
+        color: #fff;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+      .btn:hover {
+        background: #5aab8e;
+      }
+      .btn-danger {
+        background: #e57373;
+        color: #fff;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.82rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+      thead tr {
+        background: #ceeadf;
+      }
+      thead th {
+        padding: 12px 14px;
+        text-align: left;
+        color: #2d6b55;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+      }
+      tbody tr {
+        border-bottom: 1px solid #f4f4f2;
+      }
+      tbody td {
+        padding: 11px 14px;
+      }
+      .panel {
+        display: none;
+      }
+      .panel.active {
+        display: block;
+      }
+      #msg1,
+      #msg2 {
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        display: none;
+      }
+      .ok {
+        background: #ceeadf;
+        color: #2d6b55;
+        display: block !important;
+      }
+      .err {
+        background: #fde8e8;
+        color: #c0392b;
+        display: block !important;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <button onclick="window.history.back()" style="background:#fff;color:#78c4a7;border:none;border-radius:10px;padding:8px 16px;font-size:0.9rem;font-weight:600;cursor:pointer;flex-shrink:0;" onmouseover="this.style.background='#e8f8f2'" onmouseout="this.style.background='#fff'">← Volver</button>
+      <span>👥</span>
+      <h1>VitalPets — Gestión de Clientes</h1>
+    </header>
+    <main>
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('clientes')">
+          🧑 Dueños
+        </button>
+        <button class="tab" onclick="switchTab('terceros')">
+          🤝 Terceros Autorizados
+        </button>
+      </div>
+
+      <!-- PANEL CLIENTES -->
+      <div id="panel-clientes" class="panel active">
+        <div class="card">
+          <h2>➕ Registrar Dueño</h2>
+          <div id="msg1"></div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nombre</label
+              ><input id="c-nombre" placeholder="Ej: Juan" />
+            </div>
+            <div class="form-group">
+              <label>Apellido</label
+              ><input id="c-apellido" placeholder="Ej: Pérez" />
+            </div>
+            <div class="form-group">
+              <label>Tipo Documento</label>
+              <select id="c-tipo">
+                <option value="RUT">RUT</option>
+                <option value="PASAPORTE">Pasaporte</option>
+                <option value="DNI">DNI</option>
+                <option value="OTRO">Otro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Número Documento</label
+              ><input id="c-doc" placeholder="Ej: 12345678-9" />
+            </div>
+            <div class="form-group">
+              <label>Teléfono</label
+              ><input id="c-tel" placeholder="Ej: +56912345678" />
+            </div>
+            <div class="form-group">
+              <label>Email</label
+              ><input id="c-email" placeholder="Ej: juan@email.com" />
+            </div>
+            <div class="form-group full">
+              <label>Dirección</label
+              ><input id="c-dir" placeholder="Ej: Av. Principal 123" />
+            </div>
+          </div>
+          <button class="btn" onclick="registrarCliente()">
+            Registrar Dueño
+          </button>
+        </div>
+        <div class="card">
+          <h2>📋 Dueños Registrados</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Documento</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="tablaClientes">
+              <tr>
+                <td
+                  colspan="6"
+                  style="text-align: center; color: #aaa; padding: 20px"
+                >
+                  Sin registros.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PANEL TERCEROS -->
+      <div id="panel-terceros" class="panel">
+        <div class="card">
+          <h2>➕ Registrar Tercero Autorizado</h2>
+          <div id="msg2"></div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nombre</label
+              ><input id="t-nombre" placeholder="Ej: María" />
+            </div>
+            <div class="form-group">
+              <label>Apellido</label
+              ><input id="t-apellido" placeholder="Ej: López" />
+            </div>
+            <div class="form-group">
+              <label>Teléfono</label
+              ><input id="t-tel" placeholder="Ej: +56987654321" />
+            </div>
+            <div class="form-group">
+              <label>Relación con el Dueño</label>
+              <select id="t-relacion">
+                <option value="Familiar">Familiar</option>
+                <option value="Vecino">Vecino</option>
+                <option value="Amigo">Amigo</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label>ID del Dueño que autoriza</label
+              ><input id="t-clienteId" type="number" placeholder="Ej: 1" />
+            </div>
+          </div>
+          <button class="btn" onclick="registrarTercero()">
+            Registrar Tercero
+          </button>
+        </div>
+        <div class="card">
+          <h2>📋 Terceros Registrados</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Relación</th>
+                <th>Dueño ID</th>
+              </tr>
+            </thead>
+            <tbody id="tablaTerceros">
+              <tr>
+                <td
+                  colspan="5"
+                  style="text-align: center; color: #aaa; padding: 20px"
+                >
+                  Sin registros.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+    <script>
+      const API = "http://localhost:8082/api/clientes";
+      window.onload = () => cargarClientes();
+
+      function switchTab(tab) {
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".panel")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById("panel-" + tab).classList.add("active");
+        event.target.classList.add("active");
+        if (tab === "clientes") cargarClientes();
+      }
+
+      async function registrarCliente() {
+        const msg = document.getElementById("msg1");
+        const body = {
+          nombre: document.getElementById("c-nombre").value,
+          apellido: document.getElementById("c-apellido").value,
+          tipoDocumento: document.getElementById("c-tipo").value,
+          numeroDocumento: document.getElementById("c-doc").value,
+          telefono: document.getElementById("c-tel").value,
+          email: document.getElementById("c-email").value,
+          direccion: document.getElementById("c-dir").value,
+        };
+        try {
+          const res = await fetch(API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          if (res.ok) {
+            msg.className = "ok";
+            msg.textContent = "✅ Dueño registrado exitosamente.";
+            cargarClientes();
+          } else {
+            msg.className = "err";
+            msg.textContent = "❌ Error al registrar. Verifica los campos.";
+          }
+        } catch (e) {
+          msg.className = "err";
+          msg.textContent = "❌ No se pudo conectar con el servidor.";
+        }
+      }
+
+      async function cargarClientes() {
+        const tbody = document.getElementById("tablaClientes");
+        try {
+          const data = await (await fetch(API)).json();
+          if (!data.length) return;
+          tbody.innerHTML = data
+            .map(
+              (c) => `<tr>
+                <td>${c.id}</td><td><strong>${c.nombre} ${c.apellido}</strong></td>
+                <td>${c.tipoDocumento}: ${c.numeroDocumento}</td>
+                <td>${c.telefono}</td><td>${c.email || "-"}</td>
+                <td><button class="btn-danger" onclick="desactivar(${c.id})">Dar de baja</button></td>
+            </tr>`,
+            )
+            .join("");
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async function registrarTercero() {
+        const msg = document.getElementById("msg2");
+        const body = {
+          nombre: document.getElementById("t-nombre").value,
+          apellido: document.getElementById("t-apellido").value,
+          telefono: document.getElementById("t-tel").value,
+          relacion: document.getElementById("t-relacion").value,
+          clienteId: parseInt(document.getElementById("t-clienteId").value),
+        };
+        try {
+          const res = await fetch(`${API}/terceros`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          if (res.ok) {
+            msg.className = "ok";
+            msg.textContent = "✅ Tercero registrado exitosamente.";
+          } else {
+            msg.className = "err";
+            msg.textContent = "❌ Error al registrar tercero.";
+          }
+        } catch (e) {
+          msg.className = "err";
+          msg.textContent = "❌ No se pudo conectar.";
+        }
+      }
+
+      async function desactivar(id) {
+        if (!confirm("¿Dar de baja este cliente?")) return;
+        await fetch(`${API}/${id}`, { method: "DELETE" });
+        cargarClientes();
+      }
+    </script>
+  </body>
+</html>

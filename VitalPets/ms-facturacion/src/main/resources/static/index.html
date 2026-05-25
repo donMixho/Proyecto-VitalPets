@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>VitalPets — Facturación</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: #f9fcfb;
+        color: #2d2d2d;
+      }
+      header {
+        background: #78c4a7;
+        padding: 18px 40px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      header h1 {
+        color: #fff;
+        font-size: 1.6rem;
+        font-weight: 700;
+      }
+      main {
+        max-width: 1000px;
+        margin: 36px auto;
+        padding: 0 20px;
+      }
+      .card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 28px 32px;
+        box-shadow: 0 2px 12px rgba(120, 196, 167, 0.15);
+        margin-bottom: 32px;
+        border-top: 4px solid #78c4a7;
+      }
+      .card h2 {
+        color: #78c4a7;
+        margin-bottom: 20px;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-group.full {
+        grid-column: span 2;
+      }
+      label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #555;
+        text-transform: uppercase;
+      }
+      input,
+      select {
+        padding: 10px 14px;
+        border: 1.5px solid #ceeadf;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        background: #f9fcfb;
+        outline: none;
+      }
+      input:focus,
+      select:focus {
+        border-color: #78c4a7;
+        background: #fff;
+      }
+      .btn {
+        background: #78c4a7;
+        color: #fff;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+      .btn:hover {
+        background: #5aab8e;
+      }
+      .btn-sm {
+        background: #78c4a7;
+        color: #fff;
+        border: none;
+        padding: 5px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.82rem;
+      }
+      .btn-danger {
+        background: #e57373;
+        color: #fff;
+        border: none;
+        padding: 5px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.82rem;
+      }
+      .btn-add {
+        background: #ceeadf;
+        color: #2d6b55;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+      thead tr {
+        background: #ceeadf;
+      }
+      thead th {
+        padding: 10px 14px;
+        text-align: left;
+        color: #2d6b55;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+      }
+      tbody tr {
+        border-bottom: 1px solid #f4f4f2;
+      }
+      tbody td {
+        padding: 10px 14px;
+      }
+      .badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        background: #ceeadf;
+        color: #2d6b55;
+      }
+      .badge-pend {
+        background: #fff3cd;
+        color: #856404;
+      }
+      .badge-pag {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .badge-anul {
+        background: #fde8e8;
+        color: #c0392b;
+      }
+      .detalle-box {
+        background: #f9fcfb;
+        border: 1px solid #ceeadf;
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 8px;
+      }
+      .detalle-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr auto;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      #msg {
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        display: none;
+      }
+      .ok {
+        background: #ceeadf;
+        color: #2d6b55;
+        display: block !important;
+      }
+      .err {
+        background: #fde8e8;
+        color: #c0392b;
+        display: block !important;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <button onclick="window.history.back()" style="background:#fff;color:#78c4a7;border:none;border-radius:10px;padding:8px 16px;font-size:0.9rem;font-weight:600;cursor:pointer;flex-shrink:0;" onmouseover="this.style.background='#e8f8f2'" onmouseout="this.style.background='#fff'">← Volver</button>
+      <span>🧾</span>
+      <h1>VitalPets — Facturación</h1>
+    </header>
+    <main>
+      <div class="card">
+        <h2>➕ Crear Nueva Factura</h2>
+        <div id="msg"></div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>ID Cita</label
+            ><input type="number" id="f-cita" placeholder="Ej: 1" />
+          </div>
+          <div class="form-group">
+            <label>ID Cliente</label
+            ><input type="number" id="f-cliente" placeholder="Ej: 1" />
+          </div>
+          <div class="form-group">
+            <label>ID Mascota</label
+            ><input type="number" id="f-mascota" placeholder="Ej: 1" />
+          </div>
+          <div class="form-group">
+            <label>ID Personal</label
+            ><input type="number" id="f-personal" placeholder="Ej: 1" />
+          </div>
+          <div class="form-group full">
+            <label>Quién trajo la mascota</label
+            ><input id="f-quien" placeholder="Ej: María López (familiar)" />
+          </div>
+          <div class="form-group full">
+            <label>Método de Pago</label>
+            <select id="f-pago">
+              <option value="PENDIENTE">Pendiente</option>
+              <option value="EFECTIVO">Efectivo</option>
+              <option value="TARJETA_DEBITO">Tarjeta Débito</option>
+              <option value="TARJETA_CREDITO">Tarjeta Crédito</option>
+              <option value="TRANSFERENCIA">Transferencia</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Detalles dinámicos -->
+        <div style="margin-top: 16px">
+          <label
+            style="
+              font-size: 0.82rem;
+              font-weight: 600;
+              color: #555;
+              text-transform: uppercase;
+            "
+            >Ítems de la Factura</label
+          >
+          <div id="detalles-container" style="margin-top: 10px"></div>
+          <button class="btn-add" onclick="agregarDetalle()">
+            + Agregar Ítem
+          </button>
+        </div>
+        <button class="btn" onclick="crearFactura()">Generar Factura</button>
+      </div>
+
+      <div class="card">
+        <h2>📋 Facturas Emitidas</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Mascota</th>
+              <th>Quien Trajo</th>
+              <th>Servicios</th>
+              <th>Productos</th>
+              <th>Total</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaFacturas">
+            <tr>
+              <td
+                colspan="9"
+                style="text-align: center; color: #aaa; padding: 20px"
+              >
+                Sin facturas emitidas.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+    <script>
+      const API = "http://localhost:8086/api/facturas";
+      let detalles = [];
+      window.onload = () => cargar();
+
+      function agregarDetalle() {
+        const idx = detalles.length;
+        detalles.push({});
+        const box = document.getElementById("detalles-container");
+        const row = document.createElement("div");
+        row.className = "detalle-box";
+        row.id = "detalle-" + idx;
+        row.innerHTML = `
+            <div class="detalle-row">
+                <input placeholder="Descripción (ej: Consulta General)" id="d-desc-${idx}"/>
+                <select id="d-tipo-${idx}"><option value="SERVICIO">Servicio</option><option value="PRODUCTO">Producto</option></select>
+                <input type="number" placeholder="Cantidad" id="d-cant-${idx}" min="1" value="1"/>
+                <input type="number" placeholder="Precio unit." id="d-precio-${idx}" step="0.01"/>
+                <button class="btn-danger" onclick="quitarDetalle(${idx})">✕</button>
+            </div>`;
+        box.appendChild(row);
+      }
+
+      function quitarDetalle(idx) {
+        const el = document.getElementById("detalle-" + idx);
+        if (el) el.remove();
+        detalles.splice(idx, 1);
+      }
+
+      async function crearFactura() {
+        const msg = document.getElementById("msg");
+        const items = [];
+        document.querySelectorAll('[id^="d-desc-"]').forEach((el) => {
+          const idx = el.id.split("-")[2];
+          items.push({
+            descripcion: document.getElementById("d-desc-" + idx).value,
+            tipoItem: document.getElementById("d-tipo-" + idx).value,
+            cantidad: parseInt(document.getElementById("d-cant-" + idx).value),
+            precioUnitario: parseFloat(
+              document.getElementById("d-precio-" + idx).value,
+            ),
+          });
+        });
+
+        const body = {
+          citaId: parseInt(document.getElementById("f-cita").value),
+          clienteId: parseInt(document.getElementById("f-cliente").value),
+          mascotaId: parseInt(document.getElementById("f-mascota").value),
+          personalId: parseInt(document.getElementById("f-personal").value),
+          nombreQuienTrae: document.getElementById("f-quien").value,
+          metodoPago: document.getElementById("f-pago").value,
+          detalles: items,
+        };
+        try {
+          const res = await fetch(API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          if (res.ok) {
+            msg.className = "ok";
+            msg.textContent = "✅ Factura generada exitosamente.";
+            cargar();
+          } else {
+            msg.className = "err";
+            msg.textContent = "❌ Error al generar factura.";
+          }
+        } catch (e) {
+          msg.className = "err";
+          msg.textContent = "❌ Sin conexión al servidor.";
+        }
+      }
+
+      function badgeEstado(e) {
+        const m = {
+          PENDIENTE: "badge-pend",
+          PAGADA: "badge-pag",
+          ANULADA: "badge-anul",
+        };
+        return `<span class="badge ${m[e] || "badge"}">${e}</span>`;
+      }
+
+      async function cargar() {
+        const tbody = document.getElementById("tablaFacturas");
+        try {
+          const data = await (await fetch(API)).json();
+          if (!data.length) return;
+          tbody.innerHTML = data
+            .map(
+              (f) => `<tr>
+                <td><strong>#${f.id}</strong></td>
+                <td>ID: ${f.clienteId}</td>
+                <td>ID: ${f.mascotaId}</td>
+                <td>${f.nombreQuienTrae || "-"}</td>
+                <td>$${(f.totalServicios || 0).toLocaleString()}</td>
+                <td>$${(f.totalProductos || 0).toLocaleString()}</td>
+                <td><strong>$${(f.totalFinal || 0).toLocaleString()}</strong></td>
+                <td>${badgeEstado(f.estado)}</td>
+                <td style="display:flex;gap:6px">
+                    ${f.estado === "PENDIENTE" ? `<button class="btn-sm" onclick="pagar(${f.id})">Pagar</button>` : ""}
+                    ${f.estado !== "ANULADA" ? `<button class="btn-danger" onclick="anular(${f.id})">Anular</button>` : ""}
+                </td>
+            </tr>`,
+            )
+            .join("");
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async function pagar(id) {
+        const metodo = prompt(
+          "Método de pago:\nEFECTIVO\nTARJETA_DEBITO\nTARJETA_CREDITO\nTRANSFERENCIA",
+          "EFECTIVO",
+        );
+        if (!metodo) return;
+        await fetch(`${API}/${id}/pagar`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ metodoPago: metodo.toUpperCase() }),
+        });
+        cargar();
+      }
+
+      async function anular(id) {
+        if (!confirm("¿Anular esta factura?")) return;
+        await fetch(`${API}/${id}`, { method: "DELETE" });
+        cargar();
+      }
+    </script>
+  </body>
+</html>

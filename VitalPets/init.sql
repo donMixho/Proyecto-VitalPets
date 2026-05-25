@@ -1,0 +1,22 @@
+CREATE DATABASE IF NOT EXISTS mascotas_db;
+CREATE DATABASE IF NOT EXISTS clientes_db;
+CREATE DATABASE IF NOT EXISTS citas_db;
+CREATE DATABASE IF NOT EXISTS historial_db;
+CREATE DATABASE IF NOT EXISTS inventario_db;
+CREATE DATABASE IF NOT EXISTS facturacion_db;
+CREATE DATABASE IF NOT EXISTS personal_db;
+CREATE DATABASE IF NOT EXISTS vacunas_db;
+CREATE DATABASE IF NOT EXISTS laboratorio_db;
+CREATE DATABASE IF NOT EXISTS usuarios_db;
+
+GRANT ALL PRIVILEGES ON mascotas_db.* TO 'vitalpets'@'%';
+GRANT ALL PRIVILEGES ON clientes_db.* TO 'vitalpets'@'%';
+GRANT ALL PRIVILEGES ON citas_db.* TO 'vitalpets'@'%';
+GRANT ALL PRIVILEGES ON historial_db.* TO 'vitalpets'@'%';
+GRANT ALL PRIVILEGES ON inventario_db.* TO 'vitalpets'@'%';
+GRANT ALL PRIVILEGES ON facturacion_db.* TO 'vitalpets'@'%';
+GRANT ALL PRIVILEGES ON personal_db.* TO 'vitalpets'@'%';
+GRANT ALL PRIVILEGES ON vacunas_db.* TO 'vitalpets'@'%';
+GRANT ALL PRIVILEGES ON laboratorio_db.* TO 'vitalpets'@'%';
+GRANT ALL PRIVILEGES ON usuarios_db.* TO 'vitalpets'@'%';
+FLUSH PRIVILEGES;

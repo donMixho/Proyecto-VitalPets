@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>VitalPets — Vacunas</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: #f9fcfb;
+        color: #2d2d2d;
+      }
+      header {
+        background: #78c4a7;
+        padding: 18px 40px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      header h1 {
+        color: #fff;
+        font-size: 1.6rem;
+        font-weight: 700;
+      }
+      main {
+        max-width: 1000px;
+        margin: 36px auto;
+        padding: 0 20px;
+      }
+      .card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 28px 32px;
+        box-shadow: 0 2px 12px rgba(120, 196, 167, 0.15);
+        margin-bottom: 32px;
+        border-top: 4px solid #78c4a7;
+      }
+      .card h2 {
+        color: #78c4a7;
+        margin-bottom: 20px;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-group.full {
+        grid-column: span 2;
+      }
+      label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #555;
+        text-transform: uppercase;
+      }
+      input,
+      select {
+        padding: 10px 14px;
+        border: 1.5px solid #ceeadf;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        background: #f9fcfb;
+        outline: none;
+      }
+      input:focus,
+      select:focus {
+        border-color: #78c4a7;
+        background: #fff;
+      }
+      .btn {
+        background: #78c4a7;
+        color: #fff;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+      .btn:hover {
+        background: #5aab8e;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+      thead tr {
+        background: #ceeadf;
+      }
+      thead th {
+        padding: 12px 14px;
+        text-align: left;
+        color: #2d6b55;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+      }
+      tbody tr {
+        border-bottom: 1px solid #f4f4f2;
+      }
+      tbody td {
+        padding: 10px 14px;
+      }
+      .badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        background: #ceeadf;
+        color: #2d6b55;
+      }
+      .badge-alerta {
+        background: #fff3cd;
+        color: #856404;
+      }
+      #msg {
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        display: none;
+      }
+      .ok {
+        background: #ceeadf;
+        color: #2d6b55;
+        display: block !important;
+      }
+      .err {
+        background: #fde8e8;
+        color: #c0392b;
+        display: block !important;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <button onclick="window.history.back()" style="background:#fff;color:#78c4a7;border:none;border-radius:10px;padding:8px 16px;font-size:0.9rem;font-weight:600;cursor:pointer;flex-shrink:0;" onmouseover="this.style.background='#e8f8f2'" onmouseout="this.style.background='#fff'">← Volver</button>
+      <span>💉</span>
+      <h1>VitalPets — Control de Vacunas</h1>
+    </header>
+    <main>
+      <div class="card">
+        <h2>➕ Registrar Vacuna</h2>
+        <div id="msg"></div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>ID Mascota</label
+            ><input type="number" id="v-mascota" placeholder="Ej: 1" />
+          </div>
+          <div class="form-group">
+            <label>ID Cliente</label
+            ><input type="number" id="v-cliente" placeholder="Ej: 1" />
+          </div>
+          <div class="form-group">
+            <label>ID Personal</label
+            ><input type="number" id="v-personal" placeholder="Ej: 1" />
+          </div>
+          <div class="form-group">
+            <label>Nombre Vacuna</label
+            ><input id="v-nombre" placeholder="Ej: Antirrábica" />
+          </div>
+          <div class="form-group">
+            <label>Laboratorio</label
+            ><input id="v-lab" placeholder="Ej: Zoetis" />
+          </div>
+          <div class="form-group">
+            <label>Lote</label
+            ><input id="v-lote" placeholder="Ej: LOT2024-001" />
+          </div>
+          <div class="form-group">
+            <label>Fecha Aplicación</label><input type="date" id="v-fecha" />
+          </div>
+          <div class="form-group">
+            <label>Próxima Dosis</label><input type="date" id="v-prox" />
+          </div>
+          <div class="form-group">
+            <label>Dosis</label
+            ><input id="v-dosis" placeholder="Ej: 1ra dosis" />
+          </div>
+          <div class="form-group">
+            <label>Observaciones</label
+            ><input id="v-obs" placeholder="Ej: Sin reacciones adversas" />
+          </div>
+        </div>
+        <button class="btn" onclick="registrar()">Registrar Vacuna</button>
+      </div>
+      <div class="card">
+        <h2>📋 Vacunas Registradas</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Mascota</th>
+              <th>Vacuna</th>
+              <th>Laboratorio</th>
+              <th>Aplicación</th>
+              <th>Próxima Dosis</th>
+              <th>Dosis</th>
+            </tr>
+          </thead>
+          <tbody id="tablaVacunas">
+            <tr>
+              <td
+                colspan="7"
+                style="text-align: center; color: #aaa; padding: 20px"
+              >
+                Sin registros.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+    <script>
+      const API = "http://localhost:8088/api/vacunas";
+      window.onload = () => cargar();
+
+      async function registrar() {
+        const msg = document.getElementById("msg");
+        const body = {
+          mascotaId: parseInt(document.getElementById("v-mascota").value),
+          clienteId: parseInt(document.getElementById("v-cliente").value),
+          personalId: parseInt(document.getElementById("v-personal").value),
+          nombreVacuna: document.getElementById("v-nombre").value,
+          laboratorio: document.getElementById("v-lab").value,
+          lote: document.getElementById("v-lote").value,
+          fechaAplicacion: document.getElementById("v-fecha").value,
+          fechaProximaDosis: document.getElementById("v-prox").value,
+          dosis: document.getElementById("v-dosis").value,
+          observaciones: document.getElementById("v-obs").value,
+        };
+        try {
+          const res = await fetch(API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          if (res.ok) {
+            msg.className = "ok";
+            msg.textContent = "✅ Vacuna registrada exitosamente.";
+            cargar();
+          } else {
+            msg.className = "err";
+            msg.textContent = "❌ Error al registrar.";
+          }
+        } catch (e) {
+          msg.className = "err";
+          msg.textContent = "❌ Sin conexión al servidor.";
+        }
+      }
+
+      async function cargar() {
+        const tbody = document.getElementById("tablaVacunas");
+        try {
+          const data = await (await fetch(API)).json();
+          if (!data.length) return;
+          tbody.innerHTML = data
+            .map(
+              (v) => `<tr>
+                <td>${v.id}</td>
+                <td>ID: ${v.mascotaId}</td>
+                <td><strong>${v.nombreVacuna}</strong></td>
+                <td>${v.laboratorio || "-"}</td>
+                <td>${v.fechaAplicacion || "-"}</td>
+                <td>${v.fechaProximaDosis || "-"}</td>
+                <td><span class="badge">${v.dosis || "-"}</span></td>
+            </tr>`,
+            )
+            .join("");
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    </script>
+  </body>
+</html>
