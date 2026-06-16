@@ -7,8 +7,8 @@ import com.vitalpets.mascotas.repository.MascotaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,42 +17,38 @@ public class MascotaService {
 
     private final MascotaRepository mascotaRepository;
 
-    public MascotaDto registrar(MascotaDto dto) {
+    public Mascota registrar(MascotaDto dto) {
         log.info("Registrando nueva mascota: {} - Especie: {}", dto.getNombre(), dto.getEspecie());
-        MascotaDto resultado = toDto(mascotaRepository.save(toEntity(dto)));
+        Mascota resultado = mascotaRepository.save(toEntity(dto));
         log.info("Mascota registrada exitosamente con ID: {}", resultado.getId());
         return resultado;
     }
 
-    public List<MascotaDto> listarActivas() {
+    public List<Mascota> listarActivas() {
         log.info("Consultando listado de mascotas activas");
-        return mascotaRepository.findByActivoTrue()
-                .stream().map(this::toDto).collect(Collectors.toList());
+        return mascotaRepository.findByActivoTrue();
     }
 
-    public MascotaDto buscarPorId(Long id) {
+    public Mascota buscarPorId(Long id) {
         log.info("Buscando mascota con ID: {}", id);
-        Mascota mascota = mascotaRepository.findById(id)
+        return mascotaRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("Mascota no encontrada con ID: {}", id);
                     return new RuntimeException("Mascota no encontrada con ID: " + id);
                 });
-        return toDto(mascota);
     }
 
-    public List<MascotaDto> buscarPorCliente(Long clienteId) {
+    public List<Mascota> buscarPorCliente(Long clienteId) {
         log.info("Buscando mascotas del cliente ID: {}", clienteId);
-        return mascotaRepository.findByClienteId(clienteId)
-                .stream().map(this::toDto).collect(Collectors.toList());
+        return mascotaRepository.findByClienteId(clienteId);
     }
 
-    public List<MascotaDto> buscarPorEspecie(Especie especie) {
+    public List<Mascota> buscarPorEspecie(Especie especie) {
         log.info("Buscando mascotas por especie: {}", especie);
-        return mascotaRepository.findByEspecie(especie)
-                .stream().map(this::toDto).collect(Collectors.toList());
+        return mascotaRepository.findByEspecie(especie);
     }
 
-    public MascotaDto actualizar(Long id, MascotaDto dto) {
+    public Mascota actualizar(Long id, MascotaDto dto) {
         log.info("Actualizando mascota con ID: {}", id);
         Mascota existente = mascotaRepository.findById(id)
                 .orElseThrow(() -> {
@@ -65,7 +61,7 @@ public class MascotaService {
         existente.setPesoKg(dto.getPesoKg());
         existente.setNotasEspecie(dto.getNotasEspecie());
         log.info("Mascota ID: {} actualizada correctamente", id);
-        return toDto(mascotaRepository.save(existente));
+        return mascotaRepository.save(existente);
     }
 
     public void desactivar(Long id) {
@@ -78,15 +74,6 @@ public class MascotaService {
         mascota.setActivo(false);
         mascotaRepository.save(mascota);
         log.info("Mascota ID: {} desactivada correctamente", id);
-    }
-
-    private MascotaDto toDto(Mascota m) {
-        return MascotaDto.builder()
-                .id(m.getId()).nombre(m.getNombre()).especie(m.getEspecie())
-                .raza(m.getRaza()).edadAnios(m.getEdadAnios()).sexo(m.getSexo())
-                .pesoKg(m.getPesoKg()).colorPelaje(m.getColorPelaje())
-                .notasEspecie(m.getNotasEspecie()).clienteId(m.getClienteId())
-                .activo(m.getActivo()).build();
     }
 
     private Mascota toEntity(MascotaDto dto) {

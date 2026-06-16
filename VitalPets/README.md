@@ -2,6 +2,8 @@
 
 [![Java](https://img.shields.io/badge/Java-21-orange?style=flat-square&logo=java)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.14-brightgreen?style=flat-square&logo=spring)](https://spring.io/projects/spring-boot)
+[![Spring Security](https://img.shields.io/badge/Spring%20Security-JWT-brightgreen?style=flat-square&logo=springsecurity)](https://spring.io/projects/spring-security)
+[![Spring Cloud Gateway](https://img.shields.io/badge/Spring%20Cloud-Gateway-blue?style=flat-square&logo=spring)](https://spring.io/projects/spring-cloud-gateway)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-blue?style=flat-square&logo=mysql)](https://www.mysql.com/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-blue?style=flat-square&logo=docker)](https://www.docker.com/)
 [![Postman](https://img.shields.io/badge/Postman-Tested-orange?style=flat-square&logo=postman)](https://www.postman.com/)
@@ -42,10 +44,11 @@ El sistema garantiza la trazabilidad legal de cada visita, permite al personal c
 
 ## 🏗️ Arquitectura de Microservicios
 
-El sistema está dividido en **10 microservicios independientes**, cada uno con su propia base de datos y comunicándose entre sí a través de servicios REST mediante **WebClient**.
+El sistema está dividido en **10 microservicios independientes** más un **API Gateway** como punto de entrada único, cada uno con su propia base de datos y comunicándose entre sí a través de servicios REST mediante **WebClient**.
 
 | # | Microservicio | Puerto | Base de datos | Función |
 |---|---|---|---|---|
+| 0 | **MS-Gateway** | **8080** | — | **Punto de entrada único al sistema. Enruta todas las peticiones a los microservicios correspondientes** |
 | 1 | **MS-Mascotas** | 8081 | `mascotas_db` | Registrar las mascotas y sus datos por especie |
 | 2 | **MS-Clientes** | 8082 | `clientes_db` | Registra los dueños legales y/o terceros autorizados que llevan una mascota |
 | 3 | **MS-Citas** | 8083 | `citas_db` | Agenda las consultas, peluquería y otros servicios |
@@ -55,7 +58,95 @@ El sistema está dividido en **10 microservicios independientes**, cada uno con 
 | 7 | **MS-Personal** | 8087 | `personal_db` | Veterinarios, estilistas y técnicos con sus implementos |
 | 8 | **MS-Vacunas** | 8088 | `vacunas_db` | Control de vacunas |
 | 9 | **MS-Laboratorio** | 8089 | `laboratorio_db` | Solicitudes y carga de resultados de exámenes |
-| 10 | **MS-Usuarios** | 8090 | `usuarios_db` | Cuentas de acceso al sistema|
+| 10 | **MS-Usuarios** | 8090 | `usuarios_db` | Cuentas de acceso al sistema |
+
+---
+
+## 🌐 API Gateway
+
+El **MS-Gateway** (puerto 8080) es el punto de entrada único al sistema. Todas las peticiones del cliente llegan al Gateway, que las reenvía al microservicio correspondiente según la ruta.
+
+**Tecnología:** Spring Cloud Gateway 2023.0.1 (basado en WebFlux / programación reactiva)
+
+| Ruta Gateway | Microservicio destino | Puerto interno |
+|---|---|---|
+| `/api/mascotas/**` | MS-Mascotas | 8081 |
+| `/api/clientes/**` | MS-Clientes | 8082 |
+| `/api/citas/**` | MS-Citas | 8083 |
+| `/api/historial/**` | MS-Historial | 8084 |
+| `/api/productos/**` | MS-Inventario | 8085 |
+| `/api/facturas/**` | MS-Facturación | 8086 |
+| `/api/personal/**` | MS-Personal | 8087 |
+| `/api/vacunas/**` | MS-Vacunas | 8088 |
+| `/api/examenes/**` | MS-Laboratorio | 8089 |
+| `/api/usuarios/**` | MS-Usuarios | 8090 |
+
+Con Docker activo, el cliente sólo necesita apuntar a `http://localhost:8080` — el Gateway resuelve el enrutamiento internamente usando los nombres de contenedor.
+
+---
+
+## 🔐 Seguridad — JWT
+
+El sistema utiliza **Spring Security + JWT (JSON Web Token)** para proteger los endpoints de los 10 microservicios.
+
+### Flujo de autenticación
+
+1. El cliente hace **POST `/api/usuarios/login`** con sus credenciales
+2. **MS-Usuarios** valida las credenciales y genera un **token JWT firmado**
+3. El cliente incluye el token en cada petición posterior como header:
+   ```
+   Authorization: Bearer <token>
+   ```
+4. Los **otros 9 microservicios** validan el token en cada request antes de procesar la operación
+
+### Endpoints públicos (sin token)
+
+| Endpoint | Microservicio |
+|---|---|
+| `POST /api/usuarios/login` | MS-Usuarios |
+| `GET /swagger-ui.html` de cada microservicio | Todos |
+| `GET /v3/api-docs` de cada microservicio | Todos |
+
+### Ejemplo de uso con Postman
+
+```
+# Paso 1 — obtener token
+POST http://localhost:8090/api/usuarios/login
+Body: { "username": "admin", "password": "admin123" }
+→ Respuesta: { "token": "eyJhbGciOiJIUzI1NiJ9..." }
+
+# Paso 2 — usar el token en peticiones protegidas
+GET http://localhost:8081/api/mascotas
+Headers: Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+```
+
+---
+
+## 🧪 Pruebas Unitarias
+
+El proyecto implementa **JUnit 5 + Mockito** en los 10 microservicios, cubriendo la capa **Service** (lógica de negocio).
+
+**Patrón de prueba:** `@ExtendWith(MockitoExtension.class)` — los repositorios se mockean con `@Mock` y el servicio bajo prueba se inyecta con `@InjectMocks`.
+
+| Microservicio | Clase testeada | Tests |
+|---|---|---|
+| MS-Mascotas | `MascotaService` | 11 |
+| MS-Clientes | `ClienteService` | 8 |
+| MS-Citas | `CitaService` | 8 |
+| MS-Historial | `HistorialService` | 7 |
+| MS-Inventario | `ProductoService` | 10 |
+| MS-Facturación | `FacturaService` | 8 |
+| MS-Personal | `PersonalService` | 9 |
+| MS-Vacunas | `VacunaService` | 7 |
+| MS-Laboratorio | `ExamenService` | 8 |
+| MS-Usuarios | `UsuarioService` | 10 |
+| **Total** | | **86 tests** |
+
+**Comando para ejecutar los tests de un microservicio:**
+```bash
+cd ms-mascotas
+./mvnw test
+```
 
 ---
 
@@ -109,6 +200,8 @@ Cada historia de usuario está vinculada al microservicio (o combinación de ell
 ### Lenguajes y frameworks
 - **Java 21** — lenguaje principal del backend
 - **Spring Boot 3.5.14** — framework para construir cada microservicio
+- **Spring Security + JWT** — autenticación y autorización con tokens firmados
+- **Spring Cloud Gateway 2023.0.1** — enrutamiento reactivo de peticiones
 - **JPA + Hibernate** — capa de persistencia
 - **Lombok** — reducción de código repetitivo (getters, setters, builders)
 - **Bean Validation** — validación declarativa de campos
@@ -119,7 +212,7 @@ Cada historia de usuario está vinculada al microservicio (o combinación de ell
 |---|---|
 | **Visual Studio Code** | Editor principal para el desarrollo de los microservicios y frontend HTML |
 | **Spring Initializr** | Generación inicial de cada uno de los 10 microservicios con sus dependencias |
-| **Docker + Docker Compose** | Contenedor de MySQL único que aloja las 10 bases de datos |
+| **Docker + Docker Compose** | Contenedor MySQL + 11 servicios dockerizados levantados con un solo comando |
 | **Postman** | Pruebas de cada endpoint REST y validación de la comunicación entre microservicios |
 | **Maven** | Gestión de dependencias y construcción de cada microservicio |
 | **Git + GitHub** | Control de versiones y repositorio remoto |
@@ -152,37 +245,55 @@ Las pruebas de Postman **funcionan de la misma manera en ambos casos**, lo cual 
 ## 🚀 Cómo Ejecutar el Proyecto
 
 ### Prerrequisitos
-- Java 21 instalado
 - Docker Desktop instalado y en ejecución
 - Postman para probar los endpoints
-- Maven (incluido como wrapper en cada microservicio)
+- Java 21 + Maven (solo si se quiere ejecutar localmente sin Docker)
 
-### Paso 1 — Levantar la base de datos MySQL con Docker
-Desde la raíz del proyecto, abrir PowerShell como administrador y ejecutar:
+### Opción A — Levantar todo con Docker (recomendado)
 
-```powershell
-docker-compose up -d
+Desde la carpeta `VitalPets/`, ejecutar:
+
+```bash
+docker-compose up --build
 ```
 
-Esto crea un contenedor MySQL en el puerto **3307** y ejecuta automáticamente el script `init.sql` que crea las 10 bases de datos.
+Esto construye y levanta los **11 servicios** en un solo comando:
+- 🗄️ MySQL en puerto `3307` (con las 10 bases de datos creadas automáticamente)
+- 🌐 API Gateway en `http://localhost:8080` (punto de entrada único)
+- ⚙️ 10 microservicios en puertos `8081`–`8090`
 
-**Credenciales:**
-- Usuario: `vitalpets`
-- Contraseña: `vitalpets123`
-- Puerto: `3307`
+Los microservicios esperan a que MySQL esté saludable (`healthcheck`) antes de arrancar.
 
-### Paso 2 — Iniciar los 10 microservicios
-Cada microservicio puede ejecutarse desde IntelliJ IDEA o desde la terminal con:
+**Para detener todo:**
+```bash
+docker-compose down
+```
 
+### Opción B — Ejecución local (desarrollo)
+
+**Paso 1 — Levantar solo MySQL con Docker:**
+```bash
+docker-compose up mysql-vitalpets -d
+```
+
+**Paso 2 — Iniciar cada microservicio por separado:**
 ```bash
 cd ms-mascotas
 ./mvnw spring-boot:run
 ```
+Repetir para cada uno de los 10 microservicios (puertos 8081–8090).
 
-Repetir para cada uno de los 10 microservicios. Cada uno escucha en su propio puerto (8081 al 8090).
+**Paso 3 — Iniciar el Gateway:**
+```bash
+cd ms-gateway
+./mvnw spring-boot:run
+```
 
-### Paso 3 — Probar con Postman
-Importar la colección `VitalPets_Postman_v3.json` desde la raíz del repositorio y seguir el orden de ejecución que aparece en la descripción de la colección.
+### Paso final — Probar con Postman
+Importar la colección `VitalPets_Postman_v3.json` desde la raíz del repositorio.
+
+Con Docker activo, todas las peticiones van a **`http://localhost:8080`** (Gateway).
+En ejecución local, usar el puerto específico de cada microservicio (8081–8090).
 
 ---
 
@@ -197,10 +308,11 @@ La colección **`VitalPets_Postman_v3.json`** incluye:
 - ✅ **Flujo End to End** completo: cliente → mascota → cita → historial → vacuna → factura
 
 ### Orden recomendado de ejecución
-1. 🟢 Registrar datos base: cliente, mascota, usuario, personal
-2. 🟡 Registrar inventario
-3. 🔵 Probar WebClient en cada microservicio (inválido y válido)
-4. ⭐ Ejecutar el flujo end-to-end completo
+1. 🔐 Login en MS-Usuarios y copiar el token JWT
+2. 🟢 Registrar datos base: cliente, mascota, usuario, personal
+3. 🟡 Registrar inventario
+4. 🔵 Probar WebClient en cada microservicio (inválido y válido)
+5. ⭐ Ejecutar el flujo end-to-end completo
 
 ---
 
@@ -208,10 +320,15 @@ La colección **`VitalPets_Postman_v3.json`** incluye:
 
 ```
 VitalPets/
-├── docker-compose.yml              ← Configuración de MySQL en Docker
+├── docker-compose.yml              ← MySQL + 11 servicios Docker
 ├── init.sql                        ← Script para crear las 10 BD
 ├── VitalPets_Postman_v3.json       ← Colección de pruebas Postman
 ├── README.md                       ← Este archivo
+│
+├── ms-gateway/                     ← API Gateway (puerto 8080)
+│   └── src/main/java/com/vitalpets/gateway/
+│       ├── GatewayApplication.java
+│       └── config/GatewayConfig.java
 │
 ├── ms-mascotas/                    ← Microservicio 1 (puerto 8081)
 │   └── src/main/java/com/vitalpets/mascotas/
@@ -246,7 +363,7 @@ Cada microservicio sigue el **patrón CSR** (Controller → Service → Reposito
 
 ---
 
-## 📊 Aspectos Técnicos 
+## 📊 Aspectos Técnicos
 
 - ✅ **Patrón CSR (Controller, Service, Repository)** implementado en los 10 microservicios
 - ✅ **Persistencia JPA** con entidades y relaciones correctamente configuradas
@@ -257,6 +374,13 @@ Cada microservicio sigue el **patrón CSR** (Controller → Service → Reposito
 - ✅ **Bases de datos independientes** por microservicio (10 BD en un mismo contenedor MySQL)
 - ✅ **DTOs separados** de las entidades para evitar exponer la capa de persistencia
 - ✅ **Códigos HTTP correctos** en cada respuesta REST
+- ✅ **Migración de BD con Flyway** (`V1__init.sql` por microservicio)
+- ✅ **HATEOAS** con enlaces `_links` en todas las respuestas REST
+- ✅ **Documentación Swagger UI** en cada microservicio (`/swagger-ui.html`)
+- ✅ **Autenticación JWT** con Spring Security (token generado en MS-Usuarios)
+- ✅ **Pruebas unitarias JUnit 5 + Mockito** en capa Service (86 tests en total)
+- ✅ **API Gateway** con Spring Cloud Gateway (puerto 8080, enrutamiento reactivo)
+- ✅ **Sistema completo Dockerizado** (11 servicios + MySQL con healthcheck)
 
 ---
 
@@ -271,5 +395,5 @@ Desarrollo individual del proyecto.
 ## 📚 Asignatura
 
 **DSY1103 — Desarrollo FullStack I**  
-**Evaluación Parcial 2** — Arquitectura de Microservicios  
+**Evaluación Parcial 3** — Arquitectura de Microservicios  
 **Duoc UC** — 2026

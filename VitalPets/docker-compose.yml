@@ -12,6 +12,270 @@ services:
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "vitalpets", "-pvitalpets123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vitalpets-network
+
+  ms-mascotas:
+    build:
+      context: ./ms-mascotas
+      dockerfile: Dockerfile
+    container_name: vitalpets-mascotas
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-vitalpets:3306/mascotas_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=vitalpets
+      - SPRING_DATASOURCE_PASSWORD=vitalpets123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_FLYWAY_ENABLED=true
+    depends_on:
+      mysql-vitalpets:
+        condition: service_healthy
+    networks:
+      - vitalpets-network
+    restart: on-failure
+
+  ms-clientes:
+    build:
+      context: ./ms-clientes
+      dockerfile: Dockerfile
+    container_name: vitalpets-clientes
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-vitalpets:3306/clientes_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=vitalpets
+      - SPRING_DATASOURCE_PASSWORD=vitalpets123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_FLYWAY_ENABLED=true
+    depends_on:
+      mysql-vitalpets:
+        condition: service_healthy
+    networks:
+      - vitalpets-network
+    restart: on-failure
+
+  ms-citas:
+    build:
+      context: ./ms-citas
+      dockerfile: Dockerfile
+    container_name: vitalpets-citas
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-vitalpets:3306/citas_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=vitalpets
+      - SPRING_DATASOURCE_PASSWORD=vitalpets123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_FLYWAY_ENABLED=true
+    depends_on:
+      mysql-vitalpets:
+        condition: service_healthy
+    networks:
+      - vitalpets-network
+    restart: on-failure
+
+  ms-historial:
+    build:
+      context: ./ms-historial
+      dockerfile: Dockerfile
+    container_name: vitalpets-historial
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-vitalpets:3306/historial_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=vitalpets
+      - SPRING_DATASOURCE_PASSWORD=vitalpets123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_FLYWAY_ENABLED=true
+    depends_on:
+      mysql-vitalpets:
+        condition: service_healthy
+    networks:
+      - vitalpets-network
+    restart: on-failure
+
+  ms-inventario:
+    build:
+      context: ./ms-inventario
+      dockerfile: Dockerfile
+    container_name: vitalpets-inventario
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-vitalpets:3306/inventario_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=vitalpets
+      - SPRING_DATASOURCE_PASSWORD=vitalpets123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_FLYWAY_ENABLED=true
+    depends_on:
+      mysql-vitalpets:
+        condition: service_healthy
+    networks:
+      - vitalpets-network
+    restart: on-failure
+
+  ms-facturacion:
+    build:
+      context: ./ms-facturacion
+      dockerfile: Dockerfile
+    container_name: vitalpets-facturacion
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-vitalpets:3306/facturacion_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=vitalpets
+      - SPRING_DATASOURCE_PASSWORD=vitalpets123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_FLYWAY_ENABLED=true
+    depends_on:
+      mysql-vitalpets:
+        condition: service_healthy
+    networks:
+      - vitalpets-network
+    restart: on-failure
+
+  ms-personal:
+    build:
+      context: ./ms-personal
+      dockerfile: Dockerfile
+    container_name: vitalpets-personal
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-vitalpets:3306/personal_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=vitalpets
+      - SPRING_DATASOURCE_PASSWORD=vitalpets123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_FLYWAY_ENABLED=true
+    depends_on:
+      mysql-vitalpets:
+        condition: service_healthy
+    networks:
+      - vitalpets-network
+    restart: on-failure
+
+  ms-vacunas:
+    build:
+      context: ./ms-vacunas
+      dockerfile: Dockerfile
+    container_name: vitalpets-vacunas
+    ports:
+      - "8088:8088"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-vitalpets:3306/vacunas_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=vitalpets
+      - SPRING_DATASOURCE_PASSWORD=vitalpets123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_FLYWAY_ENABLED=true
+    depends_on:
+      mysql-vitalpets:
+        condition: service_healthy
+    networks:
+      - vitalpets-network
+    restart: on-failure
+
+  ms-laboratorio:
+    build:
+      context: ./ms-laboratorio
+      dockerfile: Dockerfile
+    container_name: vitalpets-laboratorio
+    ports:
+      - "8089:8089"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-vitalpets:3306/laboratorio_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=vitalpets
+      - SPRING_DATASOURCE_PASSWORD=vitalpets123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_FLYWAY_ENABLED=true
+    depends_on:
+      mysql-vitalpets:
+        condition: service_healthy
+    networks:
+      - vitalpets-network
+    restart: on-failure
+
+  ms-usuarios:
+    build:
+      context: ./ms-usuarios
+      dockerfile: Dockerfile
+    container_name: vitalpets-usuarios
+    ports:
+      - "8090:8090"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-vitalpets:3306/usuarios_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=vitalpets
+      - SPRING_DATASOURCE_PASSWORD=vitalpets123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_FLYWAY_ENABLED=true
+    depends_on:
+      mysql-vitalpets:
+        condition: service_healthy
+    networks:
+      - vitalpets-network
+    restart: on-failure
+
+  ms-gateway:
+    build:
+      context: ./ms-gateway
+      dockerfile: Dockerfile
+    container_name: vitalpets-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_CLOUD_GATEWAY_ROUTES[0]_ID=ms-mascotas
+      - SPRING_CLOUD_GATEWAY_ROUTES[0]_URI=http://vitalpets-mascotas:8081
+      - SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[0]=Path=/api/mascotas/**
+      - SPRING_CLOUD_GATEWAY_ROUTES[1]_ID=ms-clientes
+      - SPRING_CLOUD_GATEWAY_ROUTES[1]_URI=http://vitalpets-clientes:8082
+      - SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]=Path=/api/clientes/**
+      - SPRING_CLOUD_GATEWAY_ROUTES[2]_ID=ms-citas
+      - SPRING_CLOUD_GATEWAY_ROUTES[2]_URI=http://vitalpets-citas:8083
+      - SPRING_CLOUD_GATEWAY_ROUTES[2]_PREDICATES[0]=Path=/api/citas/**
+      - SPRING_CLOUD_GATEWAY_ROUTES[3]_ID=ms-historial
+      - SPRING_CLOUD_GATEWAY_ROUTES[3]_URI=http://vitalpets-historial:8084
+      - SPRING_CLOUD_GATEWAY_ROUTES[3]_PREDICATES[0]=Path=/api/historial/**
+      - SPRING_CLOUD_GATEWAY_ROUTES[4]_ID=ms-inventario
+      - SPRING_CLOUD_GATEWAY_ROUTES[4]_URI=http://vitalpets-inventario:8085
+      - SPRING_CLOUD_GATEWAY_ROUTES[4]_PREDICATES[0]=Path=/api/productos/**
+      - SPRING_CLOUD_GATEWAY_ROUTES[5]_ID=ms-facturacion
+      - SPRING_CLOUD_GATEWAY_ROUTES[5]_URI=http://vitalpets-facturacion:8086
+      - SPRING_CLOUD_GATEWAY_ROUTES[5]_PREDICATES[0]=Path=/api/facturas/**
+      - SPRING_CLOUD_GATEWAY_ROUTES[6]_ID=ms-personal
+      - SPRING_CLOUD_GATEWAY_ROUTES[6]_URI=http://vitalpets-personal:8087
+      - SPRING_CLOUD_GATEWAY_ROUTES[6]_PREDICATES[0]=Path=/api/personal/**
+      - SPRING_CLOUD_GATEWAY_ROUTES[7]_ID=ms-vacunas
+      - SPRING_CLOUD_GATEWAY_ROUTES[7]_URI=http://vitalpets-vacunas:8088
+      - SPRING_CLOUD_GATEWAY_ROUTES[7]_PREDICATES[0]=Path=/api/vacunas/**
+      - SPRING_CLOUD_GATEWAY_ROUTES[8]_ID=ms-laboratorio
+      - SPRING_CLOUD_GATEWAY_ROUTES[8]_URI=http://vitalpets-laboratorio:8089
+      - SPRING_CLOUD_GATEWAY_ROUTES[8]_PREDICATES[0]=Path=/api/examenes/**
+      - SPRING_CLOUD_GATEWAY_ROUTES[9]_ID=ms-usuarios
+      - SPRING_CLOUD_GATEWAY_ROUTES[9]_URI=http://vitalpets-usuarios:8090
+      - SPRING_CLOUD_GATEWAY_ROUTES[9]_PREDICATES[0]=Path=/api/usuarios/**
+    depends_on:
+      - ms-mascotas
+      - ms-clientes
+      - ms-citas
+      - ms-historial
+      - ms-inventario
+      - ms-facturacion
+      - ms-personal
+      - ms-vacunas
+      - ms-laboratorio
+      - ms-usuarios
+    networks:
+      - vitalpets-network
+    restart: on-failure
 
 volumes:
   mysql_data:
+
+networks:
+  vitalpets-network:
+    driver: bridge
