@@ -384,6 +384,19 @@ Cada microservicio sigue el **patrón CSR** (Controller → Service → Reposito
 
 ---
 
+## 📝 Historial de Versiones
+
+| Versión | Evaluación | Cambios implementados |
+|---|---|---|
+| v1.0.0 | Parcial 2 | 10 microservicios con patrón CSR, CRUD completo, GlobalExceptionHandler, logs SLF4J, DTOs, WebClient entre microservicios, interfaz HTML5/CSS3 |
+| v2.0.0 | Parcial 3 | Flyway (migraciones SQL), HATEOAS (_links en respuestas), Testing JUnit 5 + Mockito (86 tests), Swagger UI por microservicio, JWT con Spring Security, Docker Compose completo, API Gateway (puerto 8080) |
+
+> El proyecto creció de **10 microservicios** con funcionalidad básica
+> a un **sistema distribuido completo** con seguridad, documentación,
+> pruebas automatizadas y despliegue containerizado.
+
+---
+
 ## 👨‍💻 Autor
 
 **Leandro Ruiz**  
