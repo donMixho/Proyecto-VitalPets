@@ -3,10 +3,6 @@ package com.vitalpets.usuarios.controller;
 import com.vitalpets.usuarios.dto.UsuarioDto;
 import com.vitalpets.usuarios.security.JwtUtil;
 import com.vitalpets.usuarios.service.UsuarioService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -23,17 +19,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 @RequestMapping("/api/usuarios")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
-@Tag(name = "Usuarios", description = "Gestión de cuentas de acceso con roles diferenciados al sistema")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
     private final JwtUtil jwtUtil;
 
-    @Operation(summary = "Registrar nuevo usuario", description = "Crea una cuenta de acceso con el rol especificado")
-    @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Usuario registrado exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos")
-    })
     @PostMapping
     public ResponseEntity<UsuarioDto> registrar(@Valid @RequestBody UsuarioDto dto) {
         UsuarioDto response = usuarioService.registrar(dto);
@@ -42,10 +32,6 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @Operation(summary = "Listar usuarios activos", description = "Retorna todos los usuarios con activo=true (sin campo password)")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente")
-    })
     @GetMapping
     public ResponseEntity<CollectionModel<UsuarioDto>> listar() {
         List<UsuarioDto> lista = usuarioService.listarActivos();
@@ -56,11 +42,6 @@ public class UsuarioController {
             linkTo(methodOn(UsuarioController.class).listar()).withSelfRel()));
     }
 
-    @Operation(summary = "Buscar usuario por ID")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-    })
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDto> buscarPorId(@PathVariable Long id) {
         UsuarioDto response = usuarioService.buscarPorId(id);
@@ -70,13 +51,6 @@ public class UsuarioController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Login de usuario",
-               description = "Autentica credenciales y retorna token JWT válido por 24 horas. " +
-                             "Body: { \"username\": \"admin\", \"password\": \"clave\" }")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Autenticación exitosa — retorna JWT"),
-        @ApiResponse(responseCode = "401", description = "Credenciales inválidas")
-    })
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
         try {
@@ -98,11 +72,6 @@ public class UsuarioController {
         }
     }
 
-    @Operation(summary = "Desactivar usuario (soft delete)")
-    @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Usuario desactivado correctamente"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> desactivar(@PathVariable Long id) {
         usuarioService.desactivar(id);

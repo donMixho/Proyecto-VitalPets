@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class CitaClient {
 
     private final WebClient.Builder webClientBuilder;
-    private static final String CITAS_URL = "http://localhost:8083";
+    private static final String CITAS_URL = "http://vitalpets-citas:8083";
 
     public boolean existeCita(Long citaId) {
         try {

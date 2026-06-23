@@ -290,7 +290,7 @@ cd ms-gateway
 ```
 
 ### Paso final — Probar con Postman
-Importar la colección `VitalPets_Postman_v3.json` desde la raíz del repositorio.
+Importar la colección `VitalPets_Postman_v5.json` desde la raíz del repositorio.
 
 Con Docker activo, todas las peticiones van a **`http://localhost:8080`** (Gateway).
 En ejecución local, usar el puerto específico de cada microservicio (8081–8090).
@@ -299,7 +299,7 @@ En ejecución local, usar el puerto específico de cada microservicio (8081–80
 
 ## 🧪 Pruebas con Postman
 
-La colección **`VitalPets_Postman_v3.json`** incluye:
+La colección **`VitalPets_Postman_v5.json`** incluye:
 
 - ✅ **CRUD completo** para los 10 microservicios
 - ✅ **Pruebas del GlobalExceptionHandler** (IDs inexistentes que retornan 404 estructurado)
@@ -374,9 +374,9 @@ Cada microservicio sigue el **patrón CSR** (Controller → Service → Reposito
 - ✅ **Bases de datos independientes** por microservicio (10 BD en un mismo contenedor MySQL)
 - ✅ **DTOs separados** de las entidades para evitar exponer la capa de persistencia
 - ✅ **Códigos HTTP correctos** en cada respuesta REST
-- ✅ **Migración de BD con Flyway** (`V1__init.sql` por microservicio)
+- ✅ **Migración de BD con Flyway** (`V1__init.sql` por microservicio) — con `spring.jpa.hibernate.ddl-auto=validate` y `baseline-on-migrate=true`
 - ✅ **HATEOAS** con enlaces `_links` en todas las respuestas REST
-- ✅ **Documentación Swagger UI** en cada microservicio (`/swagger-ui.html`)
+- ⚠️ **Swagger UI** — implementado y luego removido por incompatibilidad entre springdoc-openapi y spring-hateoas en Spring Boot 3.5.x (conflicto en bean `hateoasHalProvider`)
 - ✅ **Autenticación JWT** con Spring Security (token generado en MS-Usuarios)
 - ✅ **Pruebas unitarias JUnit 5 + Mockito** en capa Service (86 tests en total)
 - ✅ **API Gateway** con Spring Cloud Gateway (puerto 8080, enrutamiento reactivo)
@@ -389,7 +389,8 @@ Cada microservicio sigue el **patrón CSR** (Controller → Service → Reposito
 | Versión | Evaluación | Cambios implementados |
 |---|---|---|
 | v1.0.0 | Parcial 2 | 10 microservicios con patrón CSR, CRUD completo, GlobalExceptionHandler, logs SLF4J, DTOs, WebClient entre microservicios, interfaz HTML5/CSS3 |
-| v2.0.0 | Parcial 3 | Flyway (migraciones SQL), HATEOAS (_links en respuestas), Testing JUnit 5 + Mockito (86 tests), Swagger UI por microservicio, JWT con Spring Security, Docker Compose completo, API Gateway (puerto 8080) |
+| v2.0.0 | Parcial 3 | Flyway (migraciones SQL), HATEOAS (_links en respuestas), Testing JUnit 5 + Mockito (86 tests), Swagger UI por microservicio, JWT con Spring Security, Docker Compose completo, API Gateway (puerto 8080), migración de H2 a MySQL con Flyway (V1__init.sql en los 10 microservicios) |
+| v2.1.0 | Hotfix post-entrega | Resolución de incompatibilidades técnicas: eliminación de springdoc-openapi (conflicto irreconciliable con HATEOAS en Spring Boot 3.5.x), corrección de URLs WebClient de localhost a nombres de contenedor Docker (vitalpets-mascotas:8081, etc.), desactivación de JwtAuthFilter en microservicios internos para permitir comunicación WebClient sin token |
 
 > El proyecto creció de **10 microservicios** con funcionalidad básica
 > a un **sistema distribuido completo** con seguridad, documentación,

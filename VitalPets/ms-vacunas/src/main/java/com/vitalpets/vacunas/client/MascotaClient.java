@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class MascotaClient {
 
     private final WebClient.Builder webClientBuilder;
-    private static final String MASCOTAS_URL = "http://localhost:8081";
+    private static final String MASCOTAS_URL = "http://vitalpets-mascotas:8081";
 
     public boolean existeMascota(Long mascotaId) {
         try {

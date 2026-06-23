@@ -13,7 +13,7 @@ public class ClienteClient {
     private final WebClient.Builder webClientBuilder;
 
     // URL base del MS-Clientes
-    private static final String CLIENTES_URL = "http://localhost:8082";
+    private static final String CLIENTES_URL = "http://vitalpets-clientes:8082";
 
     // Verifica si un cliente existe por su ID
     public boolean existeCliente(Long clienteId) {

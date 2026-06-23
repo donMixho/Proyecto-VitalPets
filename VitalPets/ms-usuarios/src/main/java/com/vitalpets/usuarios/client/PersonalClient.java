@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class PersonalClient {
 
     private final WebClient.Builder webClientBuilder;
-    private static final String PERSONAL_URL = "http://localhost:8087";
+    private static final String PERSONAL_URL = "http://vitalpets-personal:8087";
 
     public boolean existePersonal(Long personalId) {
         try {

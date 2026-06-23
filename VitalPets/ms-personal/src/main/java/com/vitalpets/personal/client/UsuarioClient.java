@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class UsuarioClient {
 
     private final WebClient.Builder webClientBuilder;
-    private static final String USUARIOS_URL = "http://localhost:8090";
+    private static final String USUARIOS_URL = "http://vitalpets-usuarios:8090";
 
     public boolean existeUsuario(Long usuarioId) {
         try {

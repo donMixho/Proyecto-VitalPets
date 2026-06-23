@@ -13,7 +13,7 @@ public class MascotaClient {
     private final WebClient.Builder webClientBuilder;
 
     // URL base del MS-Mascotas
-    private static final String MASCOTAS_URL = "http://localhost:8081";
+    private static final String MASCOTAS_URL = "http://vitalpets-mascotas:8081";
 
     // Verifica si una mascota existe por su ID
     public boolean existeMascota(Long mascotaId) {
