@@ -1,7 +1,7 @@
 # 🐾 VitalPets — Sistema de Gestión Veterinaria
 
 [![Java](https://img.shields.io/badge/Java-21-orange?style=flat-square&logo=java)](https://www.oracle.com/java/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.14-brightgreen?style=flat-square&logo=spring)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.13-brightgreen?style=flat-square&logo=spring)](https://spring.io/projects/spring-boot)
 [![Spring Security](https://img.shields.io/badge/Spring%20Security-JWT-brightgreen?style=flat-square&logo=springsecurity)](https://spring.io/projects/spring-security)
 [![Spring Cloud Gateway](https://img.shields.io/badge/Spring%20Cloud-Gateway-blue?style=flat-square&logo=spring)](https://spring.io/projects/spring-cloud-gateway)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-blue?style=flat-square&logo=mysql)](https://www.mysql.com/)
@@ -66,7 +66,17 @@ El sistema está dividido en **10 microservicios independientes** más un **API 
 
 El **MS-Gateway** (puerto 8080) es el punto de entrada único al sistema. Todas las peticiones del cliente llegan al Gateway, que las reenvía al microservicio correspondiente según la ruta.
 
-**Tecnología:** Spring Cloud Gateway 2023.0.1 (basado en WebFlux / programación reactiva)
+**Tecnología:** Spring Cloud Gateway 2023.0.1 (basado en WebFlux / programación reactiva, sobre Spring Boot 3.2.5)
+
+### ¿Cómo funciona?
+En vez de llamar directamente a cada microservicio por su puerto, todas las peticiones pasan por el Gateway:
+
+| Sin Gateway | Con Gateway |
+|-------------|-------------|
+| `POST http://localhost:8083/api/citas` | `POST http://localhost:8080/api/citas` |
+| `GET http://localhost:8081/api/mascotas` | `GET http://localhost:8080/api/mascotas` |
+
+### Tabla de enrutamiento
 
 | Ruta Gateway | Microservicio destino | Puerto interno |
 |---|---|---|
@@ -81,7 +91,7 @@ El **MS-Gateway** (puerto 8080) es el punto de entrada único al sistema. Todas 
 | `/api/examenes/**` | MS-Laboratorio | 8089 |
 | `/api/usuarios/**` | MS-Usuarios | 8090 |
 
-Con Docker activo, el cliente sólo necesita apuntar a `http://localhost:8080` — el Gateway resuelve el enrutamiento internamente usando los nombres de contenedor.
+El cliente sólo necesita apuntar a `http://localhost:8080` y el Gateway resuelve el enrutamiento internamente. En el entorno local actual el Gateway reenvía a `localhost:808X`; en un despliegue con Docker deben usarse los nombres de contenedor.
 
 ---
 
@@ -175,6 +185,10 @@ ms-{nombre}/
     └── WebClientConfig.java
 ```
 
+> ⚠️ **Importante:** los WebClient están configurados para entorno local
+> (localhost). En producción con Docker, cambiar las URLs al hostname
+> del contenedor correspondiente.
+
 ---
 
 ## 👥 Historias de Usuario Implementadas
@@ -199,9 +213,9 @@ Cada historia de usuario está vinculada al microservicio (o combinación de ell
 
 ### Lenguajes y frameworks
 - **Java 21** — lenguaje principal del backend
-- **Spring Boot 3.5.14** — framework para construir cada microservicio
+- **Spring Boot 3.5.13** — framework para construir cada microservicio
 - **Spring Security + JWT** — autenticación y autorización con tokens firmados
-- **Spring Cloud Gateway 2023.0.1** — enrutamiento reactivo de peticiones
+- **Spring Cloud Gateway 2023.0.1** — enrutamiento reactivo de peticiones (MS-Gateway sobre Spring Boot 3.2.5)
 - **JPA + Hibernate** — capa de persistencia
 - **Lombok** — reducción de código repetitivo (getters, setters, builders)
 - **Bean Validation** — validación declarativa de campos
@@ -395,6 +409,15 @@ Cada microservicio sigue el **patrón CSR** (Controller → Service → Reposito
 > El proyecto creció de **10 microservicios** con funcionalidad básica
 > a un **sistema distribuido completo** con seguridad, documentación,
 > pruebas automatizadas y despliegue containerizado.
+
+---
+
+## 📝 Historial de Cambios Recientes
+
+| Commit | Descripción | Archivos principales |
+|--------|-------------|----------------------|
+| feat: Correccion de errores | SecurityConfig y JwtAuthFilter corregidos en los 10 microservicios. UsuarioController actualizado. GatewayConfig modificado. | SecurityConfig.java, JwtAuthFilter.java (10 MS), UsuarioController.java, GatewayConfig.java |
+| fix: API Gateway enrutamiento correcto 10 microservicios + WebClient URLs corregidas a localhost | GatewayConfig reescrito con RouteLocatorBuilder para los 10 MS. WebClient de ms-citas y ms-historial corregidos de hostnames Docker a localhost. application.yml del Gateway limpiado y optimizado. | GatewayConfig.java, MascotaClient.java, ClienteClient.java, application.yml |
 
 ---
 
