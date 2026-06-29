@@ -228,36 +228,19 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_CLOUD_GATEWAY_ROUTES[0]_ID=ms-mascotas
-      - SPRING_CLOUD_GATEWAY_ROUTES[0]_URI=http://vitalpets-mascotas:8081
-      - SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[0]=Path=/api/mascotas/**
-      - SPRING_CLOUD_GATEWAY_ROUTES[1]_ID=ms-clientes
-      - SPRING_CLOUD_GATEWAY_ROUTES[1]_URI=http://vitalpets-clientes:8082
-      - SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]=Path=/api/clientes/**
-      - SPRING_CLOUD_GATEWAY_ROUTES[2]_ID=ms-citas
-      - SPRING_CLOUD_GATEWAY_ROUTES[2]_URI=http://vitalpets-citas:8083
-      - SPRING_CLOUD_GATEWAY_ROUTES[2]_PREDICATES[0]=Path=/api/citas/**
-      - SPRING_CLOUD_GATEWAY_ROUTES[3]_ID=ms-historial
-      - SPRING_CLOUD_GATEWAY_ROUTES[3]_URI=http://vitalpets-historial:8084
-      - SPRING_CLOUD_GATEWAY_ROUTES[3]_PREDICATES[0]=Path=/api/historial/**
-      - SPRING_CLOUD_GATEWAY_ROUTES[4]_ID=ms-inventario
-      - SPRING_CLOUD_GATEWAY_ROUTES[4]_URI=http://vitalpets-inventario:8085
-      - SPRING_CLOUD_GATEWAY_ROUTES[4]_PREDICATES[0]=Path=/api/productos/**
-      - SPRING_CLOUD_GATEWAY_ROUTES[5]_ID=ms-facturacion
-      - SPRING_CLOUD_GATEWAY_ROUTES[5]_URI=http://vitalpets-facturacion:8086
-      - SPRING_CLOUD_GATEWAY_ROUTES[5]_PREDICATES[0]=Path=/api/facturas/**
-      - SPRING_CLOUD_GATEWAY_ROUTES[6]_ID=ms-personal
-      - SPRING_CLOUD_GATEWAY_ROUTES[6]_URI=http://vitalpets-personal:8087
-      - SPRING_CLOUD_GATEWAY_ROUTES[6]_PREDICATES[0]=Path=/api/personal/**
-      - SPRING_CLOUD_GATEWAY_ROUTES[7]_ID=ms-vacunas
-      - SPRING_CLOUD_GATEWAY_ROUTES[7]_URI=http://vitalpets-vacunas:8088
-      - SPRING_CLOUD_GATEWAY_ROUTES[7]_PREDICATES[0]=Path=/api/vacunas/**
-      - SPRING_CLOUD_GATEWAY_ROUTES[8]_ID=ms-laboratorio
-      - SPRING_CLOUD_GATEWAY_ROUTES[8]_URI=http://vitalpets-laboratorio:8089
-      - SPRING_CLOUD_GATEWAY_ROUTES[8]_PREDICATES[0]=Path=/api/examenes/**
-      - SPRING_CLOUD_GATEWAY_ROUTES[9]_ID=ms-usuarios
-      - SPRING_CLOUD_GATEWAY_ROUTES[9]_URI=http://vitalpets-usuarios:8090
-      - SPRING_CLOUD_GATEWAY_ROUTES[9]_PREDICATES[0]=Path=/api/usuarios/**
+      # URIs de los microservicios para que el RouteLocator (GatewayConfig.java)
+      # los alcance por nombre de contenedor dentro de la red Docker.
+      # Sobrescriben a vitalpets.services.* del application.yml (que usa localhost).
+      - VITALPETS_SERVICES_MASCOTAS=http://vitalpets-mascotas:8081
+      - VITALPETS_SERVICES_CLIENTES=http://vitalpets-clientes:8082
+      - VITALPETS_SERVICES_CITAS=http://vitalpets-citas:8083
+      - VITALPETS_SERVICES_HISTORIAL=http://vitalpets-historial:8084
+      - VITALPETS_SERVICES_INVENTARIO=http://vitalpets-inventario:8085
+      - VITALPETS_SERVICES_FACTURACION=http://vitalpets-facturacion:8086
+      - VITALPETS_SERVICES_PERSONAL=http://vitalpets-personal:8087
+      - VITALPETS_SERVICES_VACUNAS=http://vitalpets-vacunas:8088
+      - VITALPETS_SERVICES_LABORATORIO=http://vitalpets-laboratorio:8089
+      - VITALPETS_SERVICES_USUARIOS=http://vitalpets-usuarios:8090
     depends_on:
       - ms-mascotas
       - ms-clientes

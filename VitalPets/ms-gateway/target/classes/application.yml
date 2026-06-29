@@ -10,7 +10,7 @@ spring:
   cloud:
     gateway:
       # Las rutas se definen de forma programática en GatewayConfig.java
-      # (RouteLocatorBuilder). NO se duplican aquí para evitar conflictos.
+      # (RouteLocatorBuilder), usando las URIs de vitalpets.services.* (abajo).
 
       # Sin descubrimiento de servicios (no hay Eureka/Consul): rutas estáticas
       discovery:
@@ -34,6 +34,23 @@ spring:
               - PATCH
               - OPTIONS
             allowedHeaders: "*"
+
+# URIs de los microservicios destino del Gateway.
+# Valores por defecto para EJECUCIÓN LOCAL (localhost).
+# En Docker se sobrescriben con las variables de entorno VITALPETS_SERVICES_*
+# definidas en docker-compose.yml (nombres de contenedor).
+vitalpets:
+  services:
+    mascotas: http://localhost:8081
+    clientes: http://localhost:8082
+    citas: http://localhost:8083
+    historial: http://localhost:8084
+    inventario: http://localhost:8085
+    facturacion: http://localhost:8086
+    personal: http://localhost:8087
+    vacunas: http://localhost:8088
+    laboratorio: http://localhost:8089
+    usuarios: http://localhost:8090
 
 management:
   endpoints:
