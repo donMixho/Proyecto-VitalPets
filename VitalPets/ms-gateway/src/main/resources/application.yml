@@ -4,58 +4,23 @@ server:
 spring:
   application:
     name: ms-gateway
+  main:
+    # El Gateway es WebFlux/reactivo (NO debe arrancar como servlet web)
+    web-application-type: reactive
   cloud:
     gateway:
-      routes:
-        - id: ms-mascotas
-          uri: http://localhost:8081
-          predicates:
-            - Path=/api/mascotas/**
+      # Las rutas se definen de forma programática en GatewayConfig.java
+      # (RouteLocatorBuilder). NO se duplican aquí para evitar conflictos.
 
-        - id: ms-clientes
-          uri: http://localhost:8082
-          predicates:
-            - Path=/api/clientes/**
+      # Sin descubrimiento de servicios (no hay Eureka/Consul): rutas estáticas
+      discovery:
+        locator:
+          enabled: false
 
-        - id: ms-citas
-          uri: http://localhost:8083
-          predicates:
-            - Path=/api/citas/**
-
-        - id: ms-historial
-          uri: http://localhost:8084
-          predicates:
-            - Path=/api/historial/**
-
-        - id: ms-inventario
-          uri: http://localhost:8085
-          predicates:
-            - Path=/api/productos/**
-
-        - id: ms-facturacion
-          uri: http://localhost:8086
-          predicates:
-            - Path=/api/facturas/**
-
-        - id: ms-personal
-          uri: http://localhost:8087
-          predicates:
-            - Path=/api/personal/**
-
-        - id: ms-vacunas
-          uri: http://localhost:8088
-          predicates:
-            - Path=/api/vacunas/**
-
-        - id: ms-laboratorio
-          uri: http://localhost:8089
-          predicates:
-            - Path=/api/examenes/**
-
-        - id: ms-usuarios
-          uri: http://localhost:8090
-          predicates:
-            - Path=/api/usuarios/**
+      # Timeouts del cliente HTTP del Gateway hacia los microservicios
+      httpclient:
+        connect-timeout: 3000
+        response-timeout: 10s
 
       globalcors:
         corsConfigurations:
