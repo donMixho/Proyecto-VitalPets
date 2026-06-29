@@ -51,6 +51,9 @@ public class UsuarioController {
         return ResponseEntity.ok(response);
     }
 
+
+
+    //creacion del jwt token para el login
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
         try {

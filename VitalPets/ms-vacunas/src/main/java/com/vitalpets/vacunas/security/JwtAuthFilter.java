@@ -5,7 +5,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -14,6 +13,15 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // Solo se exige token en operaciones de escritura (POST, PUT, DELETE, PATCH).
+        // Las lecturas (GET) y el preflight CORS (OPTIONS) quedan públicas, lo que
+        // permite la comunicación interna entre microservicios vía WebClient (solo usa GET).
+        String metodo = request.getMethod();
+        return "GET".equalsIgnoreCase(metodo) || "OPTIONS".equalsIgnoreCase(metodo);
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
